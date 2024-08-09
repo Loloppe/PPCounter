@@ -23,7 +23,6 @@ namespace PPCounter.Data
 
         public void Initialize()
         {
-            Logger.log.Debug("Initializaing PP Data");
             LoadCurveFile();
             _ppDownloader.OnCurvesDownloaded += OnCurvesDownloaded;
             _ppDownloader.StartDownloadingCurves();
@@ -34,7 +33,6 @@ namespace PPCounter.Data
             lock (_curves)
             {
                 _curves = curves;
-                Logger.log.Debug("Downloaded curves");
                 CurveInit = true;
                 WriteCurveFile();
             }
@@ -46,7 +44,6 @@ namespace PPCounter.Data
             {
                 try
                 {
-                    Logger.log.Debug("Found curve file, attempting to load...");
                     lock (_curves)
                     {
                         if (!CurveInit)
@@ -59,7 +56,7 @@ namespace PPCounter.Data
                 }
                 catch (Exception ex)
                 {
-                    Logger.log.Error($"Failed to deserialize JSON: {ex.Message}");
+                    Plugin.log.Error($"Failed to deserialize JSON: {ex.Message}");
                 }
             }
         }

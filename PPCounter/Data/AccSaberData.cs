@@ -3,7 +3,6 @@ using PPCounter.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine.Profiling.Memory.Experimental;
 using Zenject;
 using static PPCounter.Utilities.Structs;
 
@@ -46,7 +45,6 @@ namespace PPCounter.Data
             lock (_rankedMaps)
             {
                 CreateRankedMapsDict(rankedMaps);
-                Logger.log.Debug("Downloaded accsaber data");
                 DataInit = true;
                 //WriteAccSaberFile();
             }
@@ -56,14 +54,12 @@ namespace PPCounter.Data
         {
             if (!DataInit)
             {
-                Logger.log.Error("Tried to use AccSaberData when it wasn't initialized");
-                throw new Exception("Tried to use AccSaberData when it wasn't initialized");
+               throw new Exception("Tried to use AccSaberData when it wasn't initialized");
             }
 
             if (!_rankedMaps.ContainsKey(songID))
             {
-                Logger.log.Error($"Tried to get AP for unrecognized map: {songID}");
-                throw new Exception("Tried to get AP for unrecognized map");
+                throw new Exception("Tried to get AP for an unrecognized map: " + songID.id + " " + songID.difficulty.ToString());
             }
 
             return _rankedMaps[songID];

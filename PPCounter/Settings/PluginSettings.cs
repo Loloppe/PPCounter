@@ -10,10 +10,10 @@ namespace PPCounter.Settings
         public static Action OnAccSaberEnabled;
 
         public static PluginSettings Instance { get; set; }
-        public virtual bool showIcons { get; set; } = false;
+        public virtual bool showIcons { get; set; } = true;
         public virtual bool scoreSaberEnabled { get; set; } = true;
-        public virtual bool beatLeaderEnabled { get; set; } = false;
-        private bool _accSaberEnabled = false;
+        public virtual bool beatLeaderEnabled { get; set; } = true;
+        private bool _accSaberEnabled = true;
         public virtual bool accSaberEnabled
         {
             get => _accSaberEnabled;

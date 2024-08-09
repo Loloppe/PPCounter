@@ -180,7 +180,7 @@ namespace PPCounter.Settings
             }
             else
             {
-                Logger.log.Error($"Unrecognized PPCounter: {_selectedCounter.text}");
+                Plugin.log.Error($"Unrecognized PPCounter: {_selectedCounter.text}");
             }
         }
 

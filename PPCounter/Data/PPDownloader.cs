@@ -58,15 +58,8 @@ namespace PPCounter.Data
         {
             using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
             {
-                Logger.log.Debug("Downloading pp data...");
                 yield return webRequest.SendWebRequest();
-                if (webRequest.isNetworkError)
-                {
-                    OnError?.Invoke();
-                    Logger.log.Error($"Error downloading pp data: {webRequest.error}");
-                    throw new WebException();
-                }
-                else
+                if (webRequest.result == UnityWebRequest.Result.Success)
                 {
                     try
                     {
@@ -78,8 +71,14 @@ namespace PPCounter.Data
                     catch (Exception e)
                     {
                         OnError?.Invoke();
-                        Logger.log.Error($"Error processing json: {e.Message}");
+                        Plugin.log.Error($"Error processing json: {e.Message}");
                     }
+                }
+                else
+                {
+                    OnError?.Invoke();
+                    Plugin.log.Error($"Error downloading pp data: {webRequest.error}");
+                    throw new WebException();
                 }
             }
         }

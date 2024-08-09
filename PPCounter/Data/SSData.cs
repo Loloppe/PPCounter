@@ -29,7 +29,6 @@ namespace PPCounter.Data
             lock (_songData)
             {
                 _songData = songData;
-                Logger.log.Debug("Downloaded ss pp data");
                 DataInit = true;
                 WritePPFile();
             }
@@ -39,7 +38,6 @@ namespace PPCounter.Data
         {
             if (!DataInit)
             {
-                Logger.log.Error("Tried to use SSData when it wasn't initialized");
                 throw new Exception("Tried to use SSData when it wasn't initialized");
             }
 
@@ -56,8 +54,7 @@ namespace PPCounter.Data
                 case BeatmapDifficulty.ExpertPlus:
                     return _songData[songID.id]._ExpertPlus_SoloStandard;
                 default:
-                    Logger.log.Error("Unknown beatmap difficulty: " + songID.difficulty.ToString());
-                    throw new Exception("Unknown difficultry");
+                    throw new Exception("Unknown beatmap difficulty:" + songID.difficulty.ToString());
             }
         }
 
@@ -72,7 +69,6 @@ namespace PPCounter.Data
             {
                 try
                 {
-                    Logger.log.Debug("Found SS pp data file, attempting to load...");
                     lock (_songData)
                     {
                         if (!DataInit)
@@ -86,7 +82,7 @@ namespace PPCounter.Data
 
                 catch (Exception e)
                 {
-                    Logger.log.Error($"Error reading file: {e.Message}");
+                    Plugin.log.Error($"Error reading file: {e.Message}");
                 }
             }
         }

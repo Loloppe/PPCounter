@@ -16,7 +16,7 @@ namespace PPCounter.Utilities
             Canvas canvas = canvasUtility.GetCanvasFromID(settings.CanvasID);
             if (canvas == null)
             {
-                Logger.log.Error("null canvas");
+                Plugin.log.Error("null canvas");
                 return null;
             }
 

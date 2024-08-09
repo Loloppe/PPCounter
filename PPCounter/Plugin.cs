@@ -2,12 +2,12 @@
 using IPA.Config;
 using IPA.Config.Stores;
 using IPA.Loader;
+using IPA.Logging;
 using PPCounter.Settings;
 using PPCounter.Utilities;
 using SiraUtil.Zenject;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using IPALogger = IPA.Logging.Logger;
 
 namespace PPCounter
@@ -16,37 +16,26 @@ namespace PPCounter
     public class Plugin
     {
         internal static Plugin instance { get; private set; }
-        internal static string Name => "PP Counter";
 
         internal static bool BeatLeaderInstalled = false;
-
-        //private readonly Harmony _harmony;
-        //private const string _harmonyID = "dev.PulseLane.BeatSaber.PPCounter";
+        internal static Logger log;
 
         [Init]
         public Plugin(IPALogger logger, Config config, Zenjector zenject)
         {
             instance = this;
-            Logger.log = logger;
+            log = logger;
             zenject.Install<Installers.DataInstaller>(Location.App);
             zenject.Install<Installers.CalculatorsInstaller>(Location.App);
             zenject.Install<Installers.PPCounterInstaller>(Location.StandardPlayer, Location.MultiPlayer);
             PluginSettings.Instance = config.Generated<PluginSettings>();
-
-            RenewSettings();
-            //_harmony = new Harmony(_harmonyID);
-
-            //if (IsBeatLeaderInstalled())
-            //{
-            //    PatchBeatLeader();
-            //}
         }
 
         [OnEnable]
         public void OnEnable()
         {
-            BeatLeaderInstalled = IsBeatLeaderInstalled();
-            Logger.log.Debug($"Beatleader installed: {BeatLeaderInstalled}");
+            BeatLeaderInstalled = PluginManager.GetPluginFromId("BeatLeader") != null;
+            RenewSettings();
         }
 
         private void RenewSettings()
@@ -68,28 +57,9 @@ namespace PPCounter
             }
         }
 
-        //private void PatchBeatLeader()
-        //{
-        //    PluginMetadata metadata = PluginManager.GetPluginFromId("BeatLeader");
-
-        //    // BeatLeader.DataManager.LeaderbaordsCache.NotifyCacheWasChanged()
-        //    var originalNotifyCacheWasChanged = metadata.Assembly.GetType("BeatLeader.DataManager.LeaderbaordsCache").GetMethod("NotifyCacheWasChanged", (BindingFlags)(-1));
-        //    HarmonyMethod harmonyNotifyCacheWasChanged = new HarmonyMethod(typeof(LeaderboardsCacheNotifyCacheWasChangedPatch).GetMethod("Postfix", (BindingFlags)(-1)));
-        //    _harmony.Patch(originalNotifyCacheWasChanged, harmonyNotifyCacheWasChanged);
-        //}
-
-        private bool IsBeatLeaderInstalled()
+        [OnDisable]
+        public void OnDisable()
         {
-            try
-            {
-                var metadatas = PluginManager.EnabledPlugins.Where(x => x.Id == "BeatLeader");
-                return metadatas.Count() > 0;
-            }
-            catch (Exception e)
-            {
-                Logger.log.Debug($"Error checking for BeatLeader install: {e.Message}");
-                return false;
-            }
         }
     }
 }

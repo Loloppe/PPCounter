@@ -13,7 +13,7 @@ namespace PPCounter
     public class PPCounter : BasicCustomCounter
     {
         [Inject] private RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRank;
-        [Inject] private IDifficultyBeatmap difficultyBeatmap;
+        [Inject] private GameplayCoreSceneSetupData sceneSetupData = null;
         [Inject] private GameplayModifiers gameplayModifiers;
         [Inject] private GameEnergyCounter gameEnergyCounter;
         [Inject] private PPData ppData;
@@ -32,10 +32,13 @@ namespace PPCounter
 
         public override void CounterInit()
         {
+            if (sceneSetupData == null)
+                return;
+
             gameEnergyCounter.gameEnergyDidReach0Event += OnGameEnergyDidReach0;
 
-            var id = SongDataUtils.GetHash(difficultyBeatmap.level.levelID);
-            songID = new SongID(id, difficultyBeatmap.difficulty);
+            var id = SongDataUtils.GetHash(sceneSetupData.beatmapKey.levelId).ToUpper();
+            songID = new SongID(id, sceneSetupData.beatmapKey.difficulty);
 
             var gameplayModifiersModelSO = relativeScoreAndImmediateRank.GetField<GameplayModifiersModelSO, RelativeScoreAndImmediateRankCounter>("_gameplayModifiersModel");
 

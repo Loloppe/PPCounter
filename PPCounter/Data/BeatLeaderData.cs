@@ -32,14 +32,12 @@ namespace PPCounter.Data
         {
             if (!DataInit)
             {
-                Logger.log.Error("Tried to use BeatLeaderData when it wasn't initialized");
                 throw new Exception("Tried to use BeatLeaderData when it wasn't initialized");
             }
 
             if (!_cache.ContainsKey(songID))
             {
-                Logger.log.Error($"Tried to get stars for unrecognized map: {songID}");
-                throw new Exception("Tried to get stars for unrecognized map");
+                throw new Exception("Tried to get stars for an unrecognized map: " + songID.id + " " + songID.difficulty.ToString());
             }
 
             var diffInfo = _cache[songID].DifficultyInfo;
@@ -50,14 +48,12 @@ namespace PPCounter.Data
         {
             if (!DataInit)
             {
-                Logger.log.Error("Tried to use BeatLeaderData when it wasn't initialized");
                 throw new Exception("Tried to use BeatLeaderData when it wasn't initialized");
             }
 
             if (!_cache.ContainsKey(songID))
             {
-                Logger.log.Error($"Tried to get modifiers map for unrecognized map: {songID}");
-                throw new Exception("Tried to get modifiers map for unrecognized map");
+                throw new Exception("Tried to get modifiers for an unrecognized map: " + songID.id + " " + songID.difficulty.ToString());
             }
 
             var diffInfo = _cache[songID].DifficultyInfo;
@@ -77,7 +73,7 @@ namespace PPCounter.Data
                 }
                 catch (Exception e)
                 {
-                    Logger.log.Error($"Error trying to load bl cache: {e}");
+                    Plugin.log.Error($"Error trying to load bl cache: {e}");
                 }
             }
         }
