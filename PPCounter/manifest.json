@@ -8,8 +8,8 @@
   "gameVersion": "1.37.2",
   "dependsOn": {
     "Counters+": "^2.3.7",
-    "BeatSaberMarkupLanguage": "^1.11.4",
-    "SiraUtil": "^3.1.11",
+    "BeatSaberMarkupLanguage": "^1.11.2",
+    "SiraUtil": "^3.1.10",
     "BSIPA": "^4.3.4"
   },
   "loadAfter": [ "BeatLeader" ],
