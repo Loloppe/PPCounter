@@ -28,7 +28,7 @@ namespace PPCounter.Data
             return _cache.ContainsKey(songID) && _cache[songID].DifficultyInfo.stars > 0;
         }
 
-        public BeatLeaderRating GetStars(Structs.SongID songID)
+        public BeatLeaderRating GetStars(Structs.SongID songID, GameplayModifiers modifiers)
         {
             if (!DataInit)
             {
@@ -41,6 +41,18 @@ namespace PPCounter.Data
             }
 
             var diffInfo = _cache[songID].DifficultyInfo;
+            if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.Faster))
+            {
+                return new BeatLeaderRating(diffInfo.modifiersRating.fsAccRating, diffInfo.modifiersRating.fsPassRating, diffInfo.modifiersRating.fsTechRating);
+            }
+            else if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.Slower))
+            {
+                return new BeatLeaderRating(diffInfo.modifiersRating.ssAccRating, diffInfo.modifiersRating.ssPassRating, diffInfo.modifiersRating.ssTechRating);
+            }
+            else if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.SuperFast))
+            {
+                return new BeatLeaderRating(diffInfo.modifiersRating.sfAccRating, diffInfo.modifiersRating.sfPassRating, diffInfo.modifiersRating.sfTechRating);
+            }
             return new BeatLeaderRating(diffInfo.accRating, diffInfo.passRating, diffInfo.techRating);
         }
 

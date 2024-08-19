@@ -55,8 +55,8 @@ namespace PPCounter.Calculators
 
             _powerBottom = 0;
 
-            _rating = beatLeaderData.GetStars(songID);
-            _passPP = GetPassPP(_rating.passRating * _modifierMultiplier);
+            _rating = beatLeaderData.GetStars(songID, modifiers);
+            _passPP = GetPassPP(_rating.passRating);
 
             _accSlopes = CurveUtils.GetSlopes(_accCurve);
         }
@@ -67,18 +67,11 @@ namespace PPCounter.Calculators
         }
 
         // hopefully this doesn't take too long to run...
-        public float CalculatePP(SongID songID, float accuracy, bool failed = false)
+        public float CalculatePP(SongID songID, float accuracy)
         {
-            var multiplier = _modifierMultiplier + (failed ? _modifiersMap.nf : 0);
+            var multiplier = _modifierMultiplier;
 
             float passPP = _passPP;
-
-            // TODO: don't calculate this every time
-            if (failed)
-            {
-                passPP = GetPassPP(_rating.passRating * multiplier);
-            }
-
             float accPP = GetAccPP(_rating.accRating * multiplier, accuracy);
             float techPP = GetTechPP(_rating.techRating * multiplier, accuracy);
 
@@ -130,18 +123,6 @@ namespace PPCounter.Calculators
             if (modifiers.disappearingArrows)
             {
                 _modifierMultiplier += _modifiersMap.da;
-            }
-            if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.Faster))
-            {
-                _modifierMultiplier += _modifiersMap.fs;
-            }
-            else if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.Slower))
-            {
-                _modifierMultiplier += _modifiersMap.ss;
-            }
-            else if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.SuperFast))
-            {
-                _modifierMultiplier += _modifiersMap.sf;
             }
             if (modifiers.ghostNotes)
             {

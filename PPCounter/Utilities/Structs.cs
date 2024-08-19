@@ -70,6 +70,34 @@ namespace PPCounter.Utilities
             public float techRating;
             public int type;
             public ModifiersMap modifierValues;
+            public ModifiersRating modifiersRating;
+        }
+
+        public struct ModifiersRating
+        {
+            public float fsPassRating;
+
+            public float fsAccRating;
+
+            public float fsTechRating;
+
+            public float fsStars;
+
+            public float ssPassRating;
+
+            public float ssAccRating;
+
+            public float ssTechRating;
+
+            public float ssStars;
+
+            public float sfPassRating;
+
+            public float sfAccRating;
+
+            public float sfTechRating;
+
+            public float sfStars;
         }
 
         public struct BeatLeaderRating
