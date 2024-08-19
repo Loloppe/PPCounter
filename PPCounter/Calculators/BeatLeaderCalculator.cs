@@ -69,13 +69,11 @@ namespace PPCounter.Calculators
         // hopefully this doesn't take too long to run...
         public float CalculatePP(SongID songID, float accuracy)
         {
-            var multiplier = _modifierMultiplier;
-
             float passPP = _passPP;
-            float accPP = GetAccPP(_rating.accRating * multiplier, accuracy);
-            float techPP = GetTechPP(_rating.techRating * multiplier, accuracy);
+            float accPP = GetAccPP(_rating.accRating, accuracy);
+            float techPP = GetTechPP(_rating.techRating, accuracy);
 
-            float rawPP = Inflate(passPP + accPP + techPP);
+            float rawPP = Inflate(passPP + accPP + techPP) * _modifierMultiplier;
 
             if (float.IsInfinity(rawPP) || float.IsNaN(rawPP) || float.IsNegativeInfinity(rawPP))
             {
