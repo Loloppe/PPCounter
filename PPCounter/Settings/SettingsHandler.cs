@@ -127,10 +127,10 @@ namespace PPCounter.Settings
         [UIAction("SelectCounter")]
         void SelectCounter(TableView tableView, int row)
         {
-            _selectedCounter = _customListTableData.data[row] as PPCounterCell;
+            _selectedCounter = _customListTableData.Data[row] as PPCounterCell;
 
             UpButton.interactable = row > 0;
-            DownButton.interactable = row < _customListTableData.data.Count - 1;
+            DownButton.interactable = row < _customListTableData.Data.Count - 1;
         }
 
         [UIAction("EditPreferredOrder")]
@@ -168,19 +168,19 @@ namespace PPCounter.Settings
             }
 
 
-            if (Enum.TryParse(_selectedCounter.text, out PPCounters selectedCounter))
+            if (Enum.TryParse(_selectedCounter.Text, out PPCounters selectedCounter))
             {
                 if (Func(selectedCounter, out int newIndex))
                 {
                     PluginSettings.Instance.preferredOrder = SettingsUtils.GetPreferredOrderNumber(_preferredOrder);
 
                     ReloadTable();
-                    _customListTableData.tableView.SelectCellWithIdx(newIndex, true);
+                    _customListTableData.TableView.SelectCellWithIdx(newIndex, true);
                 }
             }
             else
             {
-                Plugin.log.Error($"Unrecognized PPCounter: {_selectedCounter.text}");
+                Plugin.log.Error($"Unrecognized PPCounter: {_selectedCounter.Text}");
             }
         }
 
@@ -225,16 +225,16 @@ namespace PPCounter.Settings
         {
             UpButton.interactable = false;
             DownButton.interactable = false;
-            _customListTableData.data.Clear();
+            _customListTableData.Data.Clear();
 
             _preferredOrder = SettingsUtils.GetCounterOrder(PluginSettings.Instance.preferredOrder, PluginSettings.Instance.numCounters);
             foreach (var counter in _preferredOrder)
             {
-                _customListTableData.data.Add(new PPCounterCell(counter.ToString()));
+                _customListTableData.Data.Add(new PPCounterCell(counter.ToString()));
             }
 
-            _customListTableData.tableView.ReloadData();
-            _customListTableData.tableView.ClearSelection();
+            _customListTableData.TableView.ReloadData();
+            _customListTableData.TableView.ClearSelection();
         }
 
         #endregion
