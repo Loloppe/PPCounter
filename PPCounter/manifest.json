@@ -7,10 +7,10 @@
   "description": "Adds a counter showing how much pp your current accuracy is worth on a ranked map",
   "gameVersion": "1.37.5",
   "dependsOn": {
-    "Counters+": "^2.3.7",
-    "BeatSaberMarkupLanguage": "^1.11.2",
-    "SiraUtil": "^3.1.10",
-    "BSIPA": "^4.3.4"
+    "Counters+": "^2.3.10",
+    "BeatSaberMarkupLanguage": "^1.12.1",
+    "SiraUtil": "^3.1.12",
+    "BSIPA": "^4.3.5"
   },
   "loadAfter": [ "BeatLeader" ],
   "features": {
