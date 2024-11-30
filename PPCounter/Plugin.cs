@@ -34,7 +34,6 @@ namespace PPCounter
         [OnEnable]
         public void OnEnable()
         {
-            BeatLeaderInstalled = PluginManager.GetPluginFromId("BeatLeader") != null;
             RenewSettings();
         }
 

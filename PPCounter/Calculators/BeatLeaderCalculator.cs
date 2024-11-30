@@ -1,17 +1,32 @@
-﻿using BeatLeader.Models;
+﻿using Newtonsoft.Json;
 using PPCounter.Data;
 using PPCounter.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using UnityEngine;
-using Zenject;
 using static PPCounter.Utilities.Structs;
 
 namespace PPCounter.Calculators
 {
+    internal class BeatLeaderRating
+    {
+        public float Pass { get; set; }
+        public float Tech { get; set; }
+        public float Acc { get; set; }
+
+        public BeatLeaderRating(float a, float p, float t)
+        {
+            Pass = p;
+            Tech = t;
+            Acc = a;
+        }
+    }
+
     internal class BeatLeaderCalculator
     {
-        [Inject] private BeatLeaderData beatLeaderData;
+        private BLData _currentMapData;
 
         private List<Point> _accCurve;
         private float[] _accSlopes;
@@ -28,13 +43,12 @@ namespace PPCounter.Calculators
         private float _inflateMultiplier;
 
         private float _modifierMultiplier;
-        private ModifiersMap _modifiersMap;
         private float _powerBottom;
 
         BeatLeaderRating _rating;
         private float _passPP;
 
-        public void SetCurve(Structs.BeatLeader beatLeader, SongID songID, GameplayModifiers modifiers)
+        public void SetCurve(Structs.BeatLeader beatLeader, GameplayModifiers modifiers)
         {
             _accCurve = beatLeader.accCurve;
             _accMultiplier = beatLeader.accMultiplier;
@@ -49,30 +63,74 @@ namespace PPCounter.Calculators
             _inflateExponential = beatLeader.inflateExponential;
             _inflateMultiplier = beatLeader.inflateMultiplier;
 
-            _modifiersMap = beatLeaderData.GetModifiersMap(songID);
-
-            CalculateModifiersMultiplier(songID, modifiers);
+            CalculateModifiersMultiplier(modifiers);
 
             _powerBottom = 0;
 
-            _rating = beatLeaderData.GetStars(songID, modifiers);
-            _passPP = GetPassPP(_rating.passRating);
-
+            _rating = GetStars(modifiers);
+            _passPP = GetPassPP(_rating.Pass);
             _accSlopes = CurveUtils.GetSlopes(_accCurve);
         }
 
-        public bool IsRanked(SongID songID)
+        public BeatLeaderRating GetStars(GameplayModifiers modifiers)
         {
-            return beatLeaderData.IsRanked(songID);
+            if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.Faster))
+            {
+                return new BeatLeaderRating(_currentMapData.modifiersRating.fsAccRating, _currentMapData.modifiersRating.fsPassRating, _currentMapData.modifiersRating.fsTechRating);
+            }
+            else if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.Slower))
+            {
+                return new BeatLeaderRating(_currentMapData.modifiersRating.ssAccRating, _currentMapData.modifiersRating.ssPassRating, _currentMapData.modifiersRating.ssTechRating);
+            }
+            else if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.SuperFast))
+            {
+                return new BeatLeaderRating(_currentMapData.modifiersRating.sfAccRating, _currentMapData.modifiersRating.sfPassRating, _currentMapData.modifiersRating.sfTechRating);
+            }
+            return new BeatLeaderRating((float)_currentMapData.accRating, (float)_currentMapData.passRating, (float)_currentMapData.techRating);
         }
 
-        // hopefully this doesn't take too long to run...
+        public async Task<bool> GetData(SongID songID)
+        {
+            try
+            {
+                _currentMapData = null;
+
+                string url = "https://api.beatleader.net/map/modinterface/" + songID.id;
+                using HttpClient client = new HttpClient();
+                using HttpResponseMessage res = await client.GetAsync(url).ConfigureAwait(false);
+                using HttpContent content = res.Content;
+                var str = await content.ReadAsStringAsync().ConfigureAwait(false);
+                if (str != null)
+                {
+                    List<BLData> obj = JsonConvert.DeserializeObject<List<BLData>>(str);
+                    foreach (BLData data in obj)
+                    {
+                        if (data.difficultyName == songID.difficulty.ToString())
+                        {
+                            _currentMapData = data;
+                            break;
+                        }
+                    }
+                    if (_currentMapData?.status == 3) // Ranked
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Plugin.log.Warn(e);
+                Plugin.log.Warn("Error during BL data fetch from API for this map");
+            }
+
+            return false;
+        }
+
         public float CalculatePP(SongID songID, float accuracy)
         {
             float passPP = _passPP;
-            float accPP = GetAccPP(_rating.accRating, accuracy);
-            float techPP = GetTechPP(_rating.techRating, accuracy);
-
+            float accPP = GetAccPP(_rating.Acc, accuracy);
+            float techPP = GetTechPP(_rating.Tech, accuracy);
             float rawPP = Inflate(passPP + accPP + techPP) * _modifierMultiplier;
 
             if (float.IsInfinity(rawPP) || float.IsNaN(rawPP) || float.IsNegativeInfinity(rawPP))
@@ -114,37 +172,37 @@ namespace PPCounter.Calculators
             return (float) Math.Exp(_techExponentialMultiplier * accuracy) * _techMultiplier * techRating;
         }
 
-        private void CalculateModifiersMultiplier(SongID songID, GameplayModifiers modifiers)
+        private void CalculateModifiersMultiplier(GameplayModifiers modifiers)
         {
             _modifierMultiplier = 1;
 
             if (modifiers.disappearingArrows)
             {
-                _modifierMultiplier += _modifiersMap.da;
+                _modifierMultiplier += _currentMapData.modifierValues.da;
             }
             if (modifiers.ghostNotes)
             {
-                _modifierMultiplier += _modifiersMap.gn;
+                _modifierMultiplier += _currentMapData.modifierValues.gn;
             }
             if (modifiers.noArrows)
             {
-                _modifierMultiplier += _modifiersMap.na;
+                _modifierMultiplier += _currentMapData.modifierValues.na;
             }
             if (modifiers.noBombs)
             {
-                _modifierMultiplier += _modifiersMap.nb;
+                _modifierMultiplier += _currentMapData.modifierValues.nb;
             }
             if (modifiers.enabledObstacleType.Equals(GameplayModifiers.EnabledObstacleType.NoObstacles))
             {
-                _modifierMultiplier += _modifiersMap.no;
+                _modifierMultiplier += _currentMapData.modifierValues.no;
             }
             if (modifiers.proMode)
             {
-                _modifierMultiplier += _modifiersMap.pm;
+                _modifierMultiplier += _currentMapData.modifierValues.pm;
             }
             if (modifiers.smallCubes)
             {
-                _modifierMultiplier += _modifiersMap.sc;
+                _modifierMultiplier += _currentMapData.modifierValues.sc;
             }
         }
     }

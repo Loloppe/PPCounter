@@ -12,11 +12,6 @@ namespace PPCounter.Installers
             Container.BindInterfacesAndSelfTo<PPData>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<SSData>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<AccSaberData>().AsSingle().NonLazy();
-
-            if (Plugin.BeatLeaderInstalled)
-            {
-                Container.BindInterfacesAndSelfTo<BeatLeaderData>().AsSingle().NonLazy();
-            }
         }
     }
 }

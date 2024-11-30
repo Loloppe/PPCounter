@@ -1,5 +1,4 @@
-﻿using BeatLeader.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PPCounter.Utilities
 {
@@ -35,83 +34,6 @@ namespace PPCounter.Utilities
             public float _Hard_SoloStandard { get; set; }
             public float _Expert_SoloStandard { get; set; }
             public float _ExpertPlus_SoloStandard { get; set; }
-        }
-
-        public class BeatLeaderCacheFileData
-        {
-            public List<BeatLeaderLeaderboardCacheEntry> Entries;
-            public long LastCheckTime;
-        }
-
-        public struct BeatLeaderLeaderboardCacheEntry
-        {
-            public string LeaderboardId;
-            public BeatLeaderSongInfo SongInfo;
-            public BeatLeaderDiffInfo DifficultyInfo;
-        }
-
-        public struct BeatLeaderSongInfo
-        {
-            public string id;
-            public string hash;
-        }
-
-        public struct BeatLeaderDiffInfo
-        {
-            public int id;
-            public int value;
-            public int mode;
-            public int status;
-            public string modeName;
-            public string difficultyName;
-            public float stars;
-            public float accRating;
-            public float passRating;
-            public float techRating;
-            public int type;
-            public ModifiersMap modifierValues;
-            public ModifiersRating modifiersRating;
-        }
-
-        public struct ModifiersRating
-        {
-            public float fsPassRating;
-
-            public float fsAccRating;
-
-            public float fsTechRating;
-
-            public float fsStars;
-
-            public float ssPassRating;
-
-            public float ssAccRating;
-
-            public float ssTechRating;
-
-            public float ssStars;
-
-            public float sfPassRating;
-
-            public float sfAccRating;
-
-            public float sfTechRating;
-
-            public float sfStars;
-        }
-
-        public struct BeatLeaderRating
-        {
-            public float accRating;
-            public float passRating;
-            public float techRating;
-
-            public BeatLeaderRating(float accRating, float passRating, float techRating)
-            {
-                this.accRating = accRating;
-                this.passRating = passRating;
-                this.techRating = techRating;
-            }
         }
 
         public class AccSaberRankedMap

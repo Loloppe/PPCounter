@@ -28,13 +28,12 @@ namespace PPCounter.Counters
 
         public bool IsActive(Structs.SongID songID)
         {
-            return beatLeaderUtils.IsRanked(songID);
+            return beatLeaderUtils.GetData(songID).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public void InitData(Structs.SongID songID, GameplayModifiersModelSO gameplayModifiersModelSO, GameplayModifiers gameplayModifiers, Structs.Leaderboards leaderboards)
         {
-            _songID = songID;
-            beatLeaderUtils.SetCurve(leaderboards.BeatLeader, songID, gameplayModifiers);
+            beatLeaderUtils.SetCurve(leaderboards.BeatLeader, gameplayModifiers);
         }
 
         public void InitCounter(CanvasUtility canvasUtility, CustomConfigModel settings, int counterIndex)

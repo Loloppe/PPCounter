@@ -12,7 +12,7 @@ namespace PPCounter.Installers
             {
                 Container.BindInterfacesAndSelfTo<ScoreSaberCounter>().AsSingle();
             }
-            if (Plugin.BeatLeaderInstalled && PluginSettings.Instance.beatLeaderEnabled)
+            if (PluginSettings.Instance.beatLeaderEnabled)
             {
                 Container.BindInterfacesAndSelfTo<BeatLeaderCounter>().AsSingle();
             }
