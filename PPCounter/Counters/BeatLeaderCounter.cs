@@ -53,7 +53,7 @@ namespace PPCounter.Counters
         public void UpdateCounter(float acc, bool failed = false)
         {
             var pp = 0f;
-            if (!failed) pp = beatLeaderUtils.CalculatePP(_songID, acc);
+            if (!failed) pp = beatLeaderUtils.CalculatePP(acc);
 
             var ppString = pp.ToString($"F{PluginSettings.Instance.decimalPrecision}", CultureInfo.InvariantCulture);
             _text.text = $"{ppString}pp";

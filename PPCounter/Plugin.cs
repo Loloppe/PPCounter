@@ -1,13 +1,14 @@
-﻿using IPA;
+﻿using BeatSaberMarkupLanguage.GameplaySetup;
+using HarmonyLib;
+using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
-using IPA.Loader;
-using IPA.Logging;
 using PPCounter.Settings;
 using PPCounter.Utilities;
 using SiraUtil.Zenject;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using IPALogger = IPA.Logging.Logger;
 
 namespace PPCounter
@@ -18,7 +19,8 @@ namespace PPCounter
         internal static Plugin instance { get; private set; }
 
         internal static bool BeatLeaderInstalled = false;
-        internal static Logger log;
+        internal static IPALogger log;
+        internal static Harmony harmony;
 
         [Init]
         public Plugin(IPALogger logger, Config config, Zenjector zenject)
@@ -28,12 +30,15 @@ namespace PPCounter
             zenject.Install<Installers.DataInstaller>(Location.App);
             zenject.Install<Installers.CalculatorsInstaller>(Location.App);
             zenject.Install<Installers.PPCounterInstaller>(Location.StandardPlayer, Location.MultiPlayer);
+            zenject.Install<Installers.MenuInstaller>(Location.Menu);
             PluginSettings.Instance = config.Generated<PluginSettings>();
+            harmony = new Harmony("Loloppe.BeatSaber.PPCounter");
         }
 
         [OnEnable]
         public void OnEnable()
         {
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
             RenewSettings();
         }
 
@@ -59,6 +64,7 @@ namespace PPCounter
         [OnDisable]
         public void OnDisable()
         {
+            harmony.UnpatchSelf();
         }
     }
 }

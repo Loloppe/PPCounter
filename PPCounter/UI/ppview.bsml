@@ -1,0 +1,9 @@
+﻿<settings-container>
+	<horizontal>
+		<text text='Calculate BeatLeader PP' align='Center'/>
+	</horizontal>
+	<slider-setting apply-on-change="true" value="accuracy" text="Target Accuracy"
+					min="60" max="100" increment="0.1"/>
+	<dropdown-list-setting text="Speed Modifier" value="speedmodifier" options="speedmodifiers" apply-on-change="true" />
+	<button text="~pp" on-click="pp_clicked" />
+</settings-container>

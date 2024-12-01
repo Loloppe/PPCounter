@@ -72,6 +72,30 @@ namespace PPCounter.Calculators
             _accSlopes = CurveUtils.GetSlopes(_accCurve);
         }
 
+        public void SetCurve(Structs.BeatLeader beatLeader, List<string> modifiers)
+        {
+            _accCurve = beatLeader.accCurve;
+            _accMultiplier = beatLeader.accMultiplier;
+
+            _passExponential = beatLeader.passExponential;
+            _passMultiplier = beatLeader.passMultiplier;
+            _passShift = beatLeader.passShift;
+
+            _techExponentialMultiplier = beatLeader.techExponentialMultiplier;
+            _techMultiplier = beatLeader.techMultiplier;
+
+            _inflateExponential = beatLeader.inflateExponential;
+            _inflateMultiplier = beatLeader.inflateMultiplier;
+
+            CalculateModifiersMultiplier(modifiers);
+
+            _powerBottom = 0;
+
+            _rating = GetStars(modifiers);
+            _passPP = GetPassPP(_rating.Pass);
+            _accSlopes = CurveUtils.GetSlopes(_accCurve);
+        }
+
         public BeatLeaderRating GetStars(GameplayModifiers modifiers)
         {
             if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.Faster))
@@ -83,6 +107,23 @@ namespace PPCounter.Calculators
                 return new BeatLeaderRating(_currentMapData.modifiersRating.ssAccRating, _currentMapData.modifiersRating.ssPassRating, _currentMapData.modifiersRating.ssTechRating);
             }
             else if (modifiers.songSpeed.Equals(GameplayModifiers.SongSpeed.SuperFast))
+            {
+                return new BeatLeaderRating(_currentMapData.modifiersRating.sfAccRating, _currentMapData.modifiersRating.sfPassRating, _currentMapData.modifiersRating.sfTechRating);
+            }
+            return new BeatLeaderRating((float)_currentMapData.accRating, (float)_currentMapData.passRating, (float)_currentMapData.techRating);
+        }
+
+        public BeatLeaderRating GetStars(List<string> modifiers)
+        {
+            if (modifiers.Contains("Fast"))
+            {
+                return new BeatLeaderRating(_currentMapData.modifiersRating.fsAccRating, _currentMapData.modifiersRating.fsPassRating, _currentMapData.modifiersRating.fsTechRating);
+            }
+            else if (modifiers.Contains("Slower"))
+            {
+                return new BeatLeaderRating(_currentMapData.modifiersRating.ssAccRating, _currentMapData.modifiersRating.ssPassRating, _currentMapData.modifiersRating.ssTechRating);
+            }
+            else if (modifiers.Contains("Super Fast"))
             {
                 return new BeatLeaderRating(_currentMapData.modifiersRating.sfAccRating, _currentMapData.modifiersRating.sfPassRating, _currentMapData.modifiersRating.sfTechRating);
             }
@@ -126,13 +167,12 @@ namespace PPCounter.Calculators
             return false;
         }
 
-        public float CalculatePP(SongID songID, float accuracy)
+        public float CalculatePP(float accuracy)
         {
             float passPP = _passPP;
             float accPP = GetAccPP(_rating.Acc, accuracy);
             float techPP = GetTechPP(_rating.Tech, accuracy);
             float rawPP = Inflate(passPP + accPP + techPP) * _modifierMultiplier;
-
             if (float.IsInfinity(rawPP) || float.IsNaN(rawPP) || float.IsNegativeInfinity(rawPP))
             {
                 rawPP = 0;
@@ -201,6 +241,40 @@ namespace PPCounter.Calculators
                 _modifierMultiplier += _currentMapData.modifierValues.pm;
             }
             if (modifiers.smallCubes)
+            {
+                _modifierMultiplier += _currentMapData.modifierValues.sc;
+            }
+        }
+
+        private void CalculateModifiersMultiplier(List<string> modifiers)
+        {
+            _modifierMultiplier = 1;
+
+            if (modifiers.Contains("da"))
+            {
+                _modifierMultiplier += _currentMapData.modifierValues.da;
+            }
+            if (modifiers.Contains("gn"))
+            {
+                _modifierMultiplier += _currentMapData.modifierValues.gn;
+            }
+            if (modifiers.Contains("na"))
+            {
+                _modifierMultiplier += _currentMapData.modifierValues.na;
+            }
+            if (modifiers.Contains("nb"))
+            {
+                _modifierMultiplier += _currentMapData.modifierValues.nb;
+            }
+            if (modifiers.Contains("no"))
+            {
+                _modifierMultiplier += _currentMapData.modifierValues.no;
+            }
+            if (modifiers.Contains("pm"))
+            {
+                _modifierMultiplier += _currentMapData.modifierValues.pm;
+            }
+            if (modifiers.Contains("sc"))
             {
                 _modifierMultiplier += _currentMapData.modifierValues.sc;
             }
