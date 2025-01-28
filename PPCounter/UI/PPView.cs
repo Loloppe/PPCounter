@@ -1,10 +1,8 @@
-﻿using BeatmapSaveDataVersion4;
-using BeatSaberMarkupLanguage.Attributes;
+﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.GameplaySetup;
 using IPA.Config.Stores;
 using PPCounter.Calculators;
 using PPCounter.Data;
-using PPCounter.HarmonyPatches;
 using PPCounter.Settings;
 using System;
 using System.Collections.Generic;
@@ -41,11 +39,31 @@ namespace PPCounter.UI
         [UIValue("accuracy")]
         public float Accuracy { get; set; } = 96f;
 
-        [UIValue("speedmodifier")]
-        public string SpeedModifier { get; set; } = "Normal";
-
-        [UIValue("speedmodifiers")]
         public List<object> SpeedModifiers = new object[] { "Slower", "Normal", "Fast", "Super Fast" }.ToList();
+
+        [UIValue("sfs")]
+        public string SFS { get; set; } = "SFS";
+
+        [UIValue("fs")]
+        public string FS { get; set; } = "FS";
+
+        [UIValue("normal")]
+        public string Normal { get; set; } = "Normal";
+
+        [UIValue("ss")]
+        public string SS { get; set; } = "SS";
+
+        [UIValue("sfsstar")]
+        public string SFSStar { get; set; } = "⭐";
+
+        [UIValue("fsstar")]
+        public string FSStar { get; set; } = "⭐";
+
+        [UIValue("normalstar")]
+        public string NormalStar { get; set; } = "⭐";
+
+        [UIValue("ssstar")]
+        public string SSStar { get; set; } = "⭐";
 
         [UIValue("pp")]
         public string PP { get; set; } = "pp";
@@ -55,33 +73,82 @@ namespace PPCounter.UI
         {
             if (hash == null)
             {
-                PP = "X";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PP)));
+                SFS = "SFS:";
+                SFSStar = "⭐";
+                FS = "FS:";
+                FSStar = "⭐";
+                Normal = "Normal:";
+                NormalStar = "⭐";
+                SS = "SS:";
+                SSStar = "⭐";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SFS)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FS)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Normal)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SS)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SFSStar)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FSStar)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NormalStar)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SSStar)));
                 return;
             }
             SongID songID = new SongID(hash, difficulty);
-            List<string> modifiers = new List<string>
-            {
-                SpeedModifier
-            };
 
             BeatLeaderCalculator beatLeaderUtils = new BeatLeaderCalculator();
             if (beatLeaderUtils.GetData(songID).ConfigureAwait(false).GetAwaiter().GetResult())
             {
                 try
                 {
-                    beatLeaderUtils.SetCurve(ppData.Curves.BeatLeader, modifiers);
-                    var text = beatLeaderUtils.CalculatePP(Accuracy / 100);
-                    var ppString = text.ToString($"F{PluginSettings.Instance.decimalPrecision}", CultureInfo.InvariantCulture);
-                    PP = $"{ppString}pp";
+                    foreach(string modifier in SpeedModifiers)
+                    {
+                        beatLeaderUtils.SetCurve(ppData.Curves.BeatLeader, new List<string>() { modifier });
+                        var star = Math.Round(beatLeaderUtils.ToStars(0.96),2);
+                        var text = beatLeaderUtils.CalculatePP(Accuracy / 100);
+                        var ppString = text.ToString($"F{PluginSettings.Instance.decimalPrecision}", CultureInfo.InvariantCulture);
+                        switch (modifier)
+                        {
+                            case "Super Fast":
+                                SFS = $"SFS: {ppString}pp";
+                                SFSStar = $"{star}⭐";
+                                break;
+                            case "Fast":
+                                FS = $"FS: {ppString}pp";
+                                FSStar = $"{star}⭐";
+                                break;
+                            case "Normal":
+                                Normal = $"Normal: {ppString}pp";
+                                NormalStar = $"{star}⭐";
+                                break;
+                            case "Slower":
+                                SS = $"SS: {ppString}pp";
+                                SSStar = $"{star}⭐";
+                                break;
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
                     Plugin.log.Error(e);
                 }
             }
-            else PP = "X";
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PP)));
+            else
+            {
+                SFS = "SFS:";
+                SFSStar = "⭐";
+                FS = "FS:";
+                FSStar = "⭐";
+                Normal = "Normal:";
+                NormalStar = "⭐";
+                SS = "SS:";
+                SSStar = "⭐";
+            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SFS)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FS)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Normal)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SS)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SFSStar)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FSStar)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NormalStar)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SSStar)));
         }
     }
 }

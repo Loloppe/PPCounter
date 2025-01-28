@@ -3,7 +3,18 @@
 		<text text='Calculate BeatLeader PP' align='Center'/>
 	</horizontal>
 	<slider-setting apply-on-change="true" value="accuracy" text="Target Accuracy"
-					min="60" max="100" increment="0.1"/>
-	<dropdown-list-setting text="Speed Modifier" value="speedmodifier" options="speedmodifiers" apply-on-change="true" />
+					min="90" max="100" increment="0.01" show-buttons='true'/>
+	<horizontal>
+		<text value="ss" text="~ss" align="Center"/>
+		<text value="normal" text="~normal" align="Center"/>
+		<text value="fs" text="~fs" align="Center"/>
+		<text value="sfs" text="~sfs" align="Center"/>
+	</horizontal>
+	<horizontal>
+		<text value="ssstar" text="~ssstar" align="Center"/>
+		<text value="normalstar" text="~normalstar" align="Center"/>
+		<text value="fsstar" text="~fsstar" align="Center"/>
+		<text value="sfsstar" text="~sfsstar" align="Center"/>
+	</horizontal>
 	<button text="~pp" on-click="pp_clicked" />
 </settings-container>

@@ -167,6 +167,75 @@ namespace PPCounter.Calculators
             return false;
         }
 
+        public double ToStars(double acc)
+        {
+            double passPP = 15.2f * Math.Exp(Math.Pow((float)_rating.Pass, 1 / 2.62f)) - 30f;
+            if (double.IsInfinity(passPP) || double.IsNaN(passPP) || double.IsNegativeInfinity(passPP) || passPP < 0)
+            {
+                passPP = 0;
+            }
+            double accPP = Curve2(acc) * _rating.Acc * 34f;
+            double techPP = Math.Exp((float)(1.9 * acc)) * 1.08f * _rating.Tech;
+            double pp = 650f * Math.Pow((float)(passPP + accPP + techPP), 1.3f) / Math.Pow(650f, 1.3f);
+            return pp / 52;
+        }
+
+        public double Curve2(double acc)
+        {
+            int i = 0;
+            for (; i < baseCurve.Count; i++)
+            {
+                if (baseCurve[i].x <= acc)
+                {
+                    break;
+                }
+            }
+
+            if (i == 0)
+            {
+                i = 1;
+            }
+
+            double middle_dis = (acc - baseCurve[i - 1].x) / (baseCurve[i].x - baseCurve[i - 1].x);
+            return (float)(baseCurve[i - 1].y + middle_dis * (baseCurve[i].y - baseCurve[i - 1].y));
+        }
+
+        public List<(double x, double y)> baseCurve = new List<(double x, double y)>()
+        {
+                (1.0, 7.424),
+                (0.999, 6.241),
+                (0.9975, 5.158),
+                (0.995, 4.010),
+                (0.9925, 3.241),
+                (0.99, 2.700),
+                (0.9875, 2.303),
+                (0.985, 2.007),
+                (0.9825, 1.786),
+                (0.98, 1.618),
+                (0.9775, 1.490),
+                (0.975, 1.392),
+                (0.9725, 1.315),
+                (0.97, 1.256),
+                (0.965, 1.167),
+                (0.96, 1.094),
+                (0.955, 1.039),
+                (0.95, 1.000),
+                (0.94, 0.931),
+                (0.93, 0.867),
+                (0.92, 0.813),
+                (0.91, 0.768),
+                (0.9, 0.729),
+                (0.875, 0.650),
+                (0.85, 0.581),
+                (0.825, 0.522),
+                (0.8, 0.473),
+                (0.75, 0.404),
+                (0.7, 0.345),
+                (0.65, 0.296),
+                (0.6, 0.256),
+                (0.0, 0.000)};
+
+
         public float CalculatePP(float accuracy)
         {
             float passPP = _passPP;
