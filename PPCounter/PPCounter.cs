@@ -5,6 +5,8 @@ using PPCounter.Data;
 using PPCounter.Settings;
 using PPCounter.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
 using Zenject;
 using static PPCounter.Utilities.Structs;
 
@@ -22,18 +24,40 @@ namespace PPCounter
         private List<IPPCounter> _activeCounters = new List<IPPCounter>();
 
         private SongID songID;
+        private bool init = false;
 
         private bool _failed = false;
+
+        public static Sprite _accSaberIcon;
+        public static Sprite _beatLeaderIcon;
+        public static Sprite _hitbloqIcon;
+        public static Sprite _scoreSaberIcon;
 
         internal PPCounter(List<IPPCounter> ppCounters)
         {
             _ppCounters = ppCounters;
         }
 
-        public override void CounterInit()
+        public async Task<bool> LoadSprite()
+        {
+            _accSaberIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.AccSaber.png");
+            _beatLeaderIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.BeatLeader.png");
+            _hitbloqIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.Hitbloq.png");
+            _scoreSaberIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.ScoreSaber.png");
+
+            init = true;
+            return init;
+        }
+
+        public async override void CounterInit()
         {
             if (sceneSetupData == null)
                 return;
+
+            if (!init)
+            {
+                await LoadSprite();
+            }
 
             gameEnergyCounter.gameEnergyDidReach0Event += OnGameEnergyDidReach0;
 

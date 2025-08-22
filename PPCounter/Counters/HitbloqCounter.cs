@@ -10,7 +10,7 @@ namespace PPCounter.Counters
     {
         public Sprite GetIcon()
         {
-            return BeatSaberMarkupLanguage.Utilities.FindSpriteInAssembly("PPCounter.Images.Hitbloq.png");
+            return PPCounter._hitbloqIcon;
         }
 
         public bool IsActive(Structs.SongID songID)
