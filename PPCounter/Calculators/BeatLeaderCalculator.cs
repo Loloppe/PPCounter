@@ -136,7 +136,7 @@ namespace PPCounter.Calculators
             {
                 _currentMapData = null;
 
-                string url = "https://api.beatleader.net/map/modinterface/" + songID.id;
+                string url = "https://api.beatleader.com/map/modinterface/" + songID.id;
                 using HttpClient client = new HttpClient();
                 using HttpResponseMessage res = await client.GetAsync(url).ConfigureAwait(false);
                 using HttpContent content = res.Content;
