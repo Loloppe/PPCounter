@@ -40,7 +40,7 @@ namespace PPCounter
 
         public async Task<bool> LoadSprite()
         {
-            _accSaberIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.AccSaber.png");
+            _accSaberIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.AccSaberReloaded.png");
             _beatLeaderIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.BeatLeader.png");
             _hitbloqIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.Hitbloq.png");
             _scoreSaberIcon = await BeatSaberMarkupLanguage.Utilities.LoadSpriteFromAssemblyAsync("PPCounter.Images.ScoreSaber.png");

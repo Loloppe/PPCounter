@@ -24,7 +24,7 @@
                     return BeatmapDifficulty.Hard;
                 case "expert":
                     return BeatmapDifficulty.Expert;
-                case "expertplus":
+                case "expert_plus":
                     return BeatmapDifficulty.ExpertPlus;
                 default:
                     throw new System.Exception("Unrecognized difficulty");

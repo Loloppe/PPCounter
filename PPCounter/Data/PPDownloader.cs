@@ -12,10 +12,10 @@ namespace PPCounter.Data
     class PPDownloader : MonoBehaviour
     {
         private const string URI_PREFIX = "https://cdn.pulselane.dev/";
-        private const string ACCSABER_URL = "https://api.accsaber.com/";
+        private const string ACCSABER_URL = "https://api.accsaberreloaded.com/v1/";
         private const string PP_FILE_NAME = "raw_pp.json";
         private const string CURVE_FILE_NAME = "curves.json";
-        private const string ACCSABER_RANKED_MAPS = "ranked-maps";
+        private const string ACCSABER_RANKED_MAPS = "maps/difficulties/all";
         public Action<Dictionary<string, RawPPData>> OnSSDataDownloaded;
         public Action<List<AccSaberRankedMap>> OnAccSaberDataDownloaded;
         public Action<Leaderboards> OnCurvesDownloaded;

@@ -26,6 +26,7 @@
   <ItemGroup>
     <None Remove="Images\AccSaber.png" />
     <None Remove="Images\AccSaber2.png" />
+    <None Remove="Images\AccSaberReloaded.png" />
     <None Remove="Images\BeatLeader.png" />
     <None Remove="Images\Hitbloq.png" />
     <None Remove="Images\ScoreSaber.png" />
@@ -138,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\AccSaber.png" />
+    <EmbeddedResource Include="Images\AccSaberReloaded.png" />
     <EmbeddedResource Include="Images\BeatLeader.png" />
     <EmbeddedResource Include="Images\Hitbloq.png" />
     <EmbeddedResource Include="Images\ScoreSaber.png" />
