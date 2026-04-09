@@ -8,10 +8,10 @@
   "gameVersion": "1.40.0",
   "dependsOn": {
     "Counters+": "^2.3.10",
-    "BeatSaberMarkupLanguage": "^1.12.5",
+    "BeatSaberMarkupLanguage": "^1.12.0",
     "SiraUtil": "^3.1.12",
     "BSIPA": "^4.3.5",
-    "SongCore": "^3.15.0"
+    "SongCore": "^3.14.0"
   },
   "features": {
     "CountersPlus.CustomCounter": {
