@@ -33,7 +33,7 @@ namespace PPCounter.Counters
 
         public void InitData(Structs.SongID songID, GameplayModifiersModelSO gameplayModifiersModelSO, GameplayModifiers gameplayModifiers, Structs.Leaderboards leaderboards)
         {
-            beatLeaderUtils.SetCurve(leaderboards.BeatLeader, gameplayModifiers);
+            beatLeaderUtils.SetCurve(gameplayModifiers);
         }
 
         public void InitCounter(CanvasUtility canvasUtility, CustomConfigModel settings, int counterIndex)

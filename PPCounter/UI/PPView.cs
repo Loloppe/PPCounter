@@ -2,7 +2,6 @@
 using BeatSaberMarkupLanguage.GameplaySetup;
 using IPA.Config.Stores;
 using PPCounter.Calculators;
-using PPCounter.Data;
 using PPCounter.Settings;
 using System;
 using System.Collections.Generic;
@@ -18,7 +17,6 @@ namespace PPCounter.UI
 {
     internal class PPView : IInitializable, IDisposable, INotifyPropertyChanged
     {
-        [Inject] private PPData ppData;
         public event PropertyChangedEventHandler PropertyChanged;
         public static string hash = null;
         public static BeatmapDifficulty difficulty;
@@ -100,8 +98,8 @@ namespace PPCounter.UI
                 {
                     foreach(string modifier in SpeedModifiers)
                     {
-                        beatLeaderUtils.SetCurve(ppData.Curves.BeatLeader, new List<string>() { modifier });
-                        var star = Math.Round(beatLeaderUtils.ToStars(0.96),2);
+                        beatLeaderUtils.SetCurve(new List<string>() { modifier });
+                        var star = Math.Round(beatLeaderUtils.GetStars(), 2);
                         var text = beatLeaderUtils.CalculatePP(Accuracy / 100);
                         var ppString = text.ToString($"F{PluginSettings.Instance.decimalPrecision}", CultureInfo.InvariantCulture);
                         switch (modifier)
